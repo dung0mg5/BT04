@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, SafeAreaView, View, KeyboardAvoidingView} from 'react-native';
+import {Text, SafeAreaView, View, KeyboardAvoidingView, TouchableWithoutFeedback} from 'react-native';
 import styled from 'styled-components/native';
 
 import {useQuery, useRealm} from './RealmContext';
@@ -7,6 +7,7 @@ import {User} from './User';
 import Input from './Input';
 import Button from './Button';
 import SliderSwitch from './SliderSwitch';
+import { Token } from './Token';
 
 const StyledText = styled.Text`
   font-size: ${props => props.size || '15px'};
@@ -26,29 +27,37 @@ export default function Login({navigation}) {
   const realm = useRealm();
 
   const toggleSwitch = () => {
+  //  realm.write(() => {
+  //   realm.deleteAll()
+  //  });
     setIsRememberMe(previousState => !previousState);
   };
 
   const login = () => {
+   const user = realm.objects(User).filtered('email == $0', email)[0];
+   if (user && user.password === password && password !== '') {
     if (isRememberMe) {
       realm.write(() => {
-        realm.create(User, {
-          accessToken: '123456',
-        });
-      });
+        realm.create(Token, {
+          code: String(Math.random() * 10000 + 90000)
+        })
+      })
+
+    
     }
-    setEmail('');
-    setPassword('');
-    setIsRememberMe(false);
-    navigation.navigate('main');
+    setEmail('')
+    setPassword('')
+    setIsRememberMe(false)
+    navigation.navigate("main", {email})
+   }
   };
 
-  const user = useQuery(User);
+  const token = useQuery(Token);
   useEffect(() => {
-    if (user.length > 0) {
-      navigation.navigate('main');
-    }
-  }, [user, navigation]);
+   if (token.length > 0) navigation.navigate("main", {email}) 
+  }, [token, navigation])
+
+ 
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
@@ -59,6 +68,14 @@ export default function Login({navigation}) {
           </StyledText>
           
         </Header>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate("signup")}>
+          <Text style={{
+            marginLeft: 20,
+            fontSize: 20,
+            fontWeight: 800,
+            color: 'grey'
+          }}>Sign up</Text>
+        </TouchableWithoutFeedback>
         <Input
           height="64px"
           width="385px"
@@ -86,8 +103,8 @@ export default function Login({navigation}) {
         </View>
 
         <Button
-          backgroundColor="#2D64BC"
-          colorText="#fff"
+          backgroundColor="#00BD6B"
+          colorText="#FFFFFF"
           onHandlePress={() => login()}>
           Sign in
         </Button>

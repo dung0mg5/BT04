@@ -1,59 +1,39 @@
 import React from 'react';
-import {View} from 'react-native';
-import styled from 'styled-components/native';
+import { View, TextInput } from 'react-native';
 
-const StyledInput = styled.View`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  border-width: 1px;
-  width: ${props => props.width || '170px'};
-  height: ${props => props.height};
-  border-radius: 5px;
-`;
+const Input = ({ height, width, placeholder, placeholderTextColor, data, setData, type, children }) => {
+  const inputStyle = {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
 
-const StyledTextInput = styled.TextInput`
-  color: #000;
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 15px 0 15px;
-  flex: 1;
-`;
-
-function Input({
-  children,
-  height,
-  width,
-  placeholder,
-  placeholderTextColor,
-  data,
-  setData,
-  type,
-}) {
   return (
-    <View>
-      <StyledInput height={height} width={width}>
-        <View
+    <View style={{ backgroundColor: '#f0f0f0', padding: 10, borderRadius: 8, margin: 10 }}>
+      <View style={inputStyle}>
+        <TextInput
           style={{
-            marginTop: 'auto',
-            marginBottom: 'auto',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <StyledTextInput
-            placeholder={placeholder}
-            placeholderTextColor={placeholderTextColor}
-            defaultValue={data}
-            onChangeText={setData}
-            secureTextEntry={type === 'password' ? true : false}
-          />
-
-          {children ? children : null}
-        </View>
-      </StyledInput>
+            flex: 1,
+            height: height,
+            width: width,
+            padding: 10,
+            borderColor: '#ccc',
+            borderWidth: 1,
+            borderRadius: 5,
+            color: '#333',
+          }}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor || '#888'}
+          defaultValue={data}
+          onChangeText={setData}
+          secureTextEntry={type === 'password'}
+        />
+        {children ? children : null}
+      </View>
     </View>
   );
-}
+};
 
 export default Input;

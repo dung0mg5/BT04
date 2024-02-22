@@ -2,13 +2,14 @@ import {createRealmContext} from '@realm/react';
 import Realm from 'realm';
 
 import {User} from './User';
+import { Token } from './Token';
 
 const config = {
-  schema: [User],
+  schema: [User, Token],
   // Increment the 'schemaVersion', since the property type of '_id'
   // has been modified.
   // The initial schemaVersion is 0.
-  schemaVersion: 1,
+  schemaVersion: 3,
   onMigration: (oldRealm, newRealm) => {
     if (oldRealm.schemaVersion < 1) {
       const oldObjects = oldRealm.objects(User);
